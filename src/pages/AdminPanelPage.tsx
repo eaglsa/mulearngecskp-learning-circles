@@ -1,9 +1,15 @@
 import React from "react";
-import { getCirclesByStatus, setCircleStatus } from "../firebase/circles";
+import {
+  getCirclesByStatus,
+  getAllCircles,
+  setCircleStatus,
+} from "../firebase/circles";
 import type { Circle, CircleStatus } from "../types/circle";
 import PasswordGate from "../components/PasswordGate";
 import StatusBadge from "../components/StatusBadge";
 import LoadingSpinner from "../components/LoadingSpinner";
+import AdminCircleRow from "../components/AdminCircleRow";
+import DeletionRequestRow from "../components/DeletionRequestRow";
 import "./AdminPanelPage.css";
 
 // Admin password hash is stored in .env as VITE_ADMIN_PASSWORD_HASH
@@ -13,7 +19,7 @@ const ADMIN_HASH =
   import.meta.env.VITE_ADMIN_PASSWORD_HASH ??
   "$2a$10$Xm.L9eEFxCZSu1pY8bsq6eP/nkKnJRZWFJWQfHTPumxl5uy0F9FGS"; // default: "mulearn-admin"
 
-type Tab = CircleStatus;
+type Tab = CircleStatus | "all";
 
 export default function AdminPanelPage() {
   React.useEffect(() => {
@@ -37,10 +43,15 @@ function AdminContent() {
     loadTab(tab);
   }, [tab]);
 
-  async function loadTab(status: Tab) {
+  async function loadTab(t: Tab) {
     setLoading(true);
     try {
-      const data = await getCirclesByStatus(status);
+      let data: Circle[];
+      if (t === "all") {
+        data = await getAllCircles();
+      } else {
+        data = await getCirclesByStatus(t as CircleStatus);
+      }
       setCircles(data);
     } catch (err) {
       console.error("Failed to load circles:", err);
@@ -63,7 +74,21 @@ function AdminContent() {
     }
   }
 
-  const tabs: Tab[] = ["pending", "approved", "rejected"];
+  const tabs: { key: Tab; label: string }[] = [
+    { key: "pending",            label: "⏳ Pending" },
+    { key: "approved",           label: "✓ Approved" },
+    { key: "rejected",           label: "✕ Rejected" },
+    { key: "all",                label: "🗂 All Circles" },
+    { key: "deletion_requested", label: "🗑 Deletion Requests" },
+  ];
+
+  const tabEmptyIcon: Partial<Record<Tab, string>> = {
+    pending:            "📭",
+    approved:           "✅",
+    rejected:           "❌",
+    all:                "📋",
+    deletion_requested: "🗑",
+  };
 
   return (
     <div className="page-wrapper adp">
@@ -82,32 +107,67 @@ function AdminContent() {
           <div className="adp__tabs">
             {tabs.map((t) => (
               <button
-                key={t}
-                className={`adp__tab ${tab === t ? "adp__tab--active" : ""}`}
-                onClick={() => setTab(t)}
-                id={`admin-tab-${t}`}
+                key={t.key}
+                className={`adp__tab ${tab === t.key ? "adp__tab--active" : ""}`}
+                onClick={() => setTab(t.key)}
+                id={`admin-tab-${t.key}`}
               >
-                {t.charAt(0).toUpperCase() + t.slice(1)}
+                {t.label}
               </button>
             ))}
           </div>
 
-          {/* Table */}
+          {/* Content */}
           {loading ? (
             <LoadingSpinner fullPage size="lg" text="Loading circles…" />
           ) : circles.length === 0 ? (
             <div className="empty-state">
               <div className="empty-state__icon">
-                {tab === "pending" ? "📭" : tab === "approved" ? "✅" : "❌"}
+                {tabEmptyIcon[tab] ?? "📋"}
               </div>
-              <p className="empty-state__title">No {tab} circles</p>
+              <p className="empty-state__title">No {tab.replace("_", " ")} circles</p>
               <p className="empty-state__text">
                 {tab === "pending"
                   ? "No new requests are waiting for review."
-                  : `No circles with ${tab} status.`}
+                  : `No circles with ${tab.replace("_", " ")} status.`}
               </p>
             </div>
+          ) : tab === "all" ? (
+            // ── All Circles tab ──
+            <div className="adp__list">
+              {circles.map((c) => (
+                <AdminCircleRow
+                  key={c.id}
+                  circle={c}
+                  onUpdated={(id, fields) =>
+                    setCircles((prev) =>
+                      prev.map((x) => (x.id === id ? { ...x, ...fields } : x))
+                    )
+                  }
+                  onDeleted={(id) =>
+                    setCircles((prev) => prev.filter((x) => x.id !== id))
+                  }
+                />
+              ))}
+            </div>
+          ) : tab === "deletion_requested" ? (
+            // ── Deletion Requests tab ──
+            <div className="adp__list">
+              {circles.map((c) => (
+                <DeletionRequestRow
+                  key={c.id}
+                  circle={c}
+                  onConfirmed={(id) =>
+                    setCircles((prev) => prev.filter((x) => x.id !== id))
+                  }
+                  onDenied={(id) =>
+                    setCircles((prev) => prev.filter((x) => x.id !== id))
+                  }
+                />
+              ))}
+            </div>
           ) : (
+            // ── Status-filtered tabs (pending / approved / rejected) ──
             <div className="adp__list">
               {circles.map((c) => (
                 <div key={c.id} className="card adp__row">

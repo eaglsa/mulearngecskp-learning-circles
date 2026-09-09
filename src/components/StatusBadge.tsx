@@ -6,9 +6,11 @@ interface Props {
 }
 
 const labels: Record<CircleStatus, string> = {
-  approved: "✓ Approved",
-  pending:  "⏳ Pending",
-  rejected: "✕ Rejected",
+  approved:            "✓ Approved",
+  pending:             "⏳ Pending",
+  rejected:            "✕ Rejected",
+  on_hold:             "⏸ On Hold",
+  deletion_requested:  "🗑 Deletion Requested",
 };
 
 export default function StatusBadge({ status }: Props) {

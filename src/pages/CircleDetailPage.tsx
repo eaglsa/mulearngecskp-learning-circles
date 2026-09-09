@@ -4,6 +4,7 @@ import { getCircleById, getParticipants } from "../firebase/circles";
 import type { Circle, Participant } from "../types/circle";
 import ParticipantAvatar from "../components/ParticipantAvatar";
 import StatusBadge from "../components/StatusBadge";
+import ContactHostCard from "../components/ContactHostCard";
 import LoadingSpinner from "../components/LoadingSpinner";
 import "./CircleDetailPage.css";
 
@@ -142,18 +143,11 @@ export default function CircleDetailPage() {
               <p className="cdp__host-name">{circle.hostName}</p>
               <p className="cdp__host-dept">{circle.hostDepartment}</p>
 
-              {circle.hostContact && (
-                <a
-                  href={circle.hostContact}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-primary"
-                  style={{ width: "100%", justifyContent: "center", marginTop: 16 }}
-                  id="contact-host-btn"
-                >
-                  💬 Contact Host
-                </a>
-              )}
+              <ContactHostCard
+                hostName={circle.hostName}
+                hostContact={circle.hostContact}
+                hostContactType={circle.hostContactType}
+              />
             </div>
 
             <div className="card cdp__manage-card">

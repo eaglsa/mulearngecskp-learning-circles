@@ -1,9 +1,9 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
-import { getCircleById, addParticipant, getParticipants } from "../firebase/circles";
+import { getCircleById, addParticipant, getParticipants, requestCircleDeletion } from "../firebase/circles";
 import type { Circle, Participant } from "../types/circle";
 import PasswordGate from "../components/PasswordGate";
-import ParticipantAvatar from "../components/ParticipantAvatar";
+import ParticipantRow from "../components/ParticipantRow";
 import LoadingSpinner from "../components/LoadingSpinner";
 import "./HostDashboardPage.css";
 
@@ -25,6 +25,8 @@ export default function HostDashboardPage() {
   const [adding, setAdding] = React.useState(false);
   const [addError, setAddError] = React.useState("");
   const [addSuccess, setAddSuccess] = React.useState("");
+  const [deletionRequested, setDeletionRequested] = React.useState(false);
+  const [requestingDeletion, setRequestingDeletion] = React.useState(false);
 
   React.useEffect(() => {
     if (!id) return;
@@ -80,6 +82,32 @@ export default function HostDashboardPage() {
       setAddError("Failed to add participant. Please try again.");
     } finally {
       setAdding(false);
+    }
+  }
+
+  function handleParticipantUpdated(pid: string, newName: string) {
+    setParticipants((prev) =>
+      prev.map((p) => (p.id === pid ? { ...p, name: newName } : p))
+    );
+  }
+
+  function handleParticipantDeleted(pid: string) {
+    setParticipants((prev) => prev.filter((p) => p.id !== pid));
+  }
+
+  async function handleRequestDeletion() {
+    if (!id || requestingDeletion) return;
+    if (!window.confirm("Request deletion of this circle? An admin will review and permanently delete it."))
+      return;
+    setRequestingDeletion(true);
+    try {
+      await requestCircleDeletion(id);
+      setDeletionRequested(true);
+    } catch (err) {
+      console.error("Failed to request deletion:", err);
+      alert("Could not submit deletion request — please try again.");
+    } finally {
+      setRequestingDeletion(false);
     }
   }
 
@@ -186,22 +214,35 @@ export default function HostDashboardPage() {
             ) : (
               <div className="hdp__participant-list">
                 {participants.map((p, i) => (
-                  <div
+                  <ParticipantRow
                     key={p.id}
-                    className="card hdp__participant-row animate-fade-in"
-                    style={{ animationDelay: `${i * 40}ms` }}
-                  >
-                    <ParticipantAvatar
-                      name={p.name}
-                      department={p.department}
-                      avatarSeed={p.avatarSeed}
-                      size="md"
-                    />
-                    <span className="hdp__participant-num">#{i + 1}</span>
-                  </div>
+                    circleId={circle.id}
+                    participant={p}
+                    index={i}
+                    onUpdated={handleParticipantUpdated}
+                    onDeleted={handleParticipantDeleted}
+                  />
                 ))}
               </div>
             )}
+
+            {/* Deletion request */}
+            <div className="hdp__danger-zone">
+              {deletionRequested || circle.status === "deletion_requested" ? (
+                <p className="hdp__deletion-pending">
+                  🕐 Deletion requested — waiting on admin review.
+                </p>
+              ) : (
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={handleRequestDeletion}
+                  disabled={requestingDeletion}
+                  id="request-deletion-btn"
+                >
+                  {requestingDeletion ? "Submitting…" : "🗑 Request Circle Deletion"}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

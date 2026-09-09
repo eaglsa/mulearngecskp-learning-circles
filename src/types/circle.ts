@@ -1,6 +1,11 @@
 import { Timestamp } from "firebase/firestore";
 
-export type CircleStatus = "pending" | "approved" | "rejected";
+export type CircleStatus =
+  | "pending"
+  | "approved"
+  | "rejected"
+  | "on_hold"
+  | "deletion_requested";
 
 export interface Circle {
   id: string;
@@ -10,9 +15,12 @@ export interface Circle {
   status: CircleStatus;
   hostName: string;
   hostContact: string;
+  /** How to interpret hostContact — optional for backwards-compat with old docs */
+  hostContactType?: "phone" | "email" | "whatsapp";
   hostDepartment: string;
   passwordHash: string;
   createdAt: Timestamp;
+  updatedAt?: Timestamp;
 }
 
 export interface Participant {

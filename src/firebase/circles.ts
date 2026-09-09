@@ -4,12 +4,14 @@ import {
   getDocs,
   getDoc,
   doc,
+  deleteDoc,
   updateDoc,
   query,
   where,
   orderBy,
   serverTimestamp,
   Timestamp,
+  writeBatch,
 } from "firebase/firestore";
 import { db } from "./config";
 import type { Circle, Participant, NewCircleData, NewParticipantData } from "../types/circle";
@@ -85,14 +87,55 @@ export async function getCircleById(id: string): Promise<Circle | null> {
 }
 
 /**
- * Update only the status field of a circle (approve or reject).
+ * Update only the status field of a circle (approve, reject, hold, etc.).
  */
 export async function setCircleStatus(
   id: string,
   status: Circle["status"]
 ): Promise<void> {
   const ref = doc(db, CIRCLES_COL, id);
-  await updateDoc(ref, { status });
+  await updateDoc(ref, { status, updatedAt: serverTimestamp() });
+}
+
+/**
+ * Admin: update editable fields on a circle. Also stamps updatedAt.
+ */
+export async function updateCircle(
+  circleId: string,
+  fields: Partial<Pick<Circle, "name" | "topic" | "description" | "hostName" | "hostContact" | "hostContactType" | "hostDepartment">>
+): Promise<void> {
+  const ref = doc(db, CIRCLES_COL, circleId);
+  await updateDoc(ref, { ...fields, updatedAt: serverTimestamp() });
+}
+
+/**
+ * Host: request that an admin delete this circle.
+ * Sets status to "deletion_requested".
+ */
+export async function requestCircleDeletion(circleId: string): Promise<void> {
+  return setCircleStatus(circleId, "deletion_requested");
+}
+
+/**
+ * Admin: confirm a deletion request — cascade-deletes participants then the circle doc.
+ */
+export async function confirmCircleDeletion(circleId: string): Promise<void> {
+  const participantsSnap = await getDocs(participantsCol(circleId));
+
+  // Batch-delete participants (500-per-batch limit — fine at this scale)
+  const batch = writeBatch(db);
+  participantsSnap.docs.forEach((d) => batch.delete(d.ref));
+  await batch.commit();
+
+  // Delete the circle doc itself
+  await deleteDoc(doc(db, CIRCLES_COL, circleId));
+}
+
+/**
+ * Admin: deny a deletion request — reverts the circle back to "approved".
+ */
+export async function denyCircleDeletion(circleId: string): Promise<void> {
+  return setCircleStatus(circleId, "approved");
 }
 
 // ─── Participants ────────────────────────────────────────────────────────────
@@ -124,4 +167,27 @@ export async function getParticipants(
   const q = query(participantsCol(circleId), orderBy("addedAt", "asc"));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() } as Participant));
+}
+
+/**
+ * Host: rename a participant (only the name field changes).
+ */
+export async function updateParticipant(
+  circleId: string,
+  participantId: string,
+  name: string
+): Promise<void> {
+  const ref = doc(participantsCol(circleId), participantId);
+  await updateDoc(ref, { name });
+}
+
+/**
+ * Host: remove a participant from a circle's subcollection.
+ */
+export async function deleteParticipant(
+  circleId: string,
+  participantId: string
+): Promise<void> {
+  const ref = doc(participantsCol(circleId), participantId);
+  await deleteDoc(ref);
 }

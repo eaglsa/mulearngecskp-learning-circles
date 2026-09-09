@@ -1,0 +1,44 @@
+.chc {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.chc__btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.chc__qr-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  background: var(--ml-gray-100);
+  border-radius: var(--ml-radius-sm);
+}
+
+.chc__qr-label {
+  font-size: 0.75rem;
+  color: var(--ml-gray-400);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Fallback (no hostContactType) */
+.chc__plain-label {
+  font-size: 0.8rem;
+  color: var(--ml-gray-400);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.chc__plain-value {
+  font-size: 0.95rem;
+  color: var(--ml-gray-700);
+  word-break: break-all;
+}

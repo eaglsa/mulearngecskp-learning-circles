@@ -1,0 +1,56 @@
+.prow {
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.prow__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.prow__name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ml-black);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.prow__dept {
+  font-size: 0.78rem;
+  color: var(--ml-gray-400);
+}
+
+.prow__num {
+  font-size: 0.8rem;
+  color: var(--ml-gray-400);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.prow__edit-input {
+  padding: 6px 10px;
+  font-size: 0.9rem;
+}
+
+.prow__actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .prow {
+    flex-wrap: wrap;
+  }
+  .prow__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

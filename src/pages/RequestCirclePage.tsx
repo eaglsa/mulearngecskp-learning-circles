@@ -11,6 +11,7 @@ interface FormData {
   hostName: string;
   hostDepartment: string;
   hostContact: string;
+  hostContactType: "phone" | "email" | "whatsapp";
   password: string;
   confirmPassword: string;
 }
@@ -22,6 +23,7 @@ const INITIAL: FormData = {
   hostName: "",
   hostDepartment: "",
   hostContact: "",
+  hostContactType: "whatsapp",
   password: "",
   confirmPassword: "",
 };
@@ -56,7 +58,7 @@ export default function RequestCirclePage() {
   }, []);
 
   function update(field: keyof FormData) {
-    return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       setForm((f) => ({ ...f, [field]: e.target.value }));
       setErrors((errs) => ({ ...errs, [field]: undefined }));
     };
@@ -91,6 +93,7 @@ export default function RequestCirclePage() {
         hostName: form.hostName.trim(),
         hostDepartment: form.hostDepartment.trim(),
         hostContact: form.hostContact.trim(),
+        hostContactType: form.hostContactType,
         passwordHash,
       });
       setSuccess(id);
@@ -238,15 +241,33 @@ export default function RequestCirclePage() {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="rc-contact" className="form-label">Contact (WhatsApp link / email) *</label>
-                  <input
-                    id="rc-contact"
-                    type="text"
-                    className={`form-input ${errors.hostContact ? "form-input--error" : ""}`}
-                    placeholder="https://wa.me/91xxxxxxxxxx or you@email.com"
-                    value={form.hostContact}
-                    onChange={update("hostContact")}
-                  />
+                  <label className="form-label">How should learners contact you? *</label>
+                  <div className="rcp__row">
+                    <select
+                      id="rc-contact-type"
+                      className="form-input"
+                      value={form.hostContactType}
+                      onChange={update("hostContactType")}
+                    >
+                      <option value="whatsapp">💬 WhatsApp</option>
+                      <option value="phone">📞 Phone / SMS</option>
+                      <option value="email">✉️ Email</option>
+                    </select>
+                    <input
+                      id="rc-contact"
+                      type="text"
+                      className={`form-input ${errors.hostContact ? "form-input--error" : ""}`}
+                      placeholder={
+                        form.hostContactType === "email"
+                          ? "you@email.com"
+                          : form.hostContactType === "phone"
+                          ? "+91 99999 00000"
+                          : "+91 99999 00000"
+                      }
+                      value={form.hostContact}
+                      onChange={update("hostContact")}
+                    />
+                  </div>
                   <span className="form-hint">This will be visible to members who want to reach you.</span>
                   {errors.hostContact && <span className="form-error">{errors.hostContact}</span>}
                 </div>

@@ -22,3 +22,13 @@
   background: rgba(239, 68, 68, 0.1);
   color: #dc2626;
 }
+
+.status-badge--on_hold {
+  background: rgba(99, 102, 241, 0.1);
+  color: #4338ca;
+}
+
+.status-badge--deletion_requested {
+  background: rgba(239, 68, 68, 0.18);
+  color: #991b1b;
+}

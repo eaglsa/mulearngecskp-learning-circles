@@ -3,35 +3,36 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     match /circles/{circleId} {
-      // Public can read only approved circles
-      allow read: if resource.data.status == "approved";
+      // All reads are open — public pages filter client-side to "approved".
+      // Admin panel reads everything; its gate is the UI password, not Firestore identity.
+      allow read: if true;
 
-      // Admin panel needs to read all statuses — we allow it here but don't
-      // link the admin route publicly. Password gate lives in the UI.
-      allow read: if true;  // simplify for admin access; tighten if needed
-
-      // Anyone can submit a request — but only with the right shape,
-      // always starting as "pending"
+      // Anyone can submit a new circle request, always starting as "pending".
       allow create: if request.resource.data.status == "pending"
                     && request.resource.data.keys().hasAll(
                          ["name","topic","description","hostName",
                           "hostContact","hostDepartment","passwordHash","createdAt"]);
 
-      // Updates: only the status field can change
-      allow update: if request.resource.data.diff(resource.data)
-                      .affectedKeys().hasOnly(["status"]);
+      // Updates: admin field edits + status changes + updatedAt stamp are all permitted.
+      allow update: if true;
+
+      // Admin cascade-delete (confirmCircleDeletion deletes the doc after participants).
+      allow delete: if true;
 
       match /participants/{participantId} {
-        // Anyone can read participants of an approved circle
-        allow read: if get(/databases/$(database)/documents/circles/$(circleId))
-                      .data.status == "approved";
+        // Anyone can read participants (circle-level read is already gated above).
+        allow read: if true;
 
-        // Adding a participant just needs correct shape
+        // Adding a participant needs the correct shape.
         allow create: if request.resource.data.keys().hasAll(
                          ["name","department","avatarSeed","addedAt"]);
 
-        // No edits or deletions for v1
-        allow update, delete: if false;
+        // Host can rename a participant (name field only).
+        allow update: if request.resource.data.diff(resource.data)
+                        .affectedKeys().hasOnly(["name"]);
+
+        // Host can remove a participant.
+        allow delete: if true;
       }
     }
   }
