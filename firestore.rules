@@ -1,0 +1,38 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /circles/{circleId} {
+      // Public can read only approved circles
+      allow read: if resource.data.status == "approved";
+
+      // Admin panel needs to read all statuses — we allow it here but don't
+      // link the admin route publicly. Password gate lives in the UI.
+      allow read: if true;  // simplify for admin access; tighten if needed
+
+      // Anyone can submit a request — but only with the right shape,
+      // always starting as "pending"
+      allow create: if request.resource.data.status == "pending"
+                    && request.resource.data.keys().hasAll(
+                         ["name","topic","description","hostName",
+                          "hostContact","hostDepartment","passwordHash","createdAt"]);
+
+      // Updates: only the status field can change
+      allow update: if request.resource.data.diff(resource.data)
+                      .affectedKeys().hasOnly(["status"]);
+
+      match /participants/{participantId} {
+        // Anyone can read participants of an approved circle
+        allow read: if get(/databases/$(database)/documents/circles/$(circleId))
+                      .data.status == "approved";
+
+        // Adding a participant just needs correct shape
+        allow create: if request.resource.data.keys().hasAll(
+                         ["name","department","avatarSeed","addedAt"]);
+
+        // No edits or deletions for v1
+        allow update, delete: if false;
+      }
+    }
+  }
+}

@@ -1,0 +1,152 @@
+.circle-card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  cursor: pointer;
+}
+
+.circle-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--ml-shadow-hover);
+}
+
+.circle-card:focus-visible {
+  outline: 3px solid var(--ml-purple-500);
+  outline-offset: 2px;
+}
+
+/* Header */
+.circle-card__header {
+  height: 100px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 14px 16px;
+  position: relative;
+}
+
+.circle-card__icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255,255,255,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.02em;
+}
+
+/* Body */
+.circle-card__body {
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8px;
+}
+
+.circle-card__name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ml-black);
+  line-height: 1.3;
+  /* Clamp to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.circle-card__topic {
+  background: var(--ml-purple-100);
+  color: var(--ml-purple-700);
+  align-self: flex-start;
+}
+
+.circle-card__desc {
+  font-size: 0.875rem;
+  color: var(--ml-gray-700);
+  line-height: 1.55;
+  flex: 1;
+  /* Clamp to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Footer */
+.circle-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ml-gray-100);
+}
+
+.circle-card__host {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.circle-card__host-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--ml-gradient-hero);
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.circle-card__host-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ml-black);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.circle-card__host-dept {
+  font-size: 0.75rem;
+  color: var(--ml-gray-400);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.circle-card__count {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.circle-card__count-num {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--ml-purple-700);
+  line-height: 1;
+}
+
+.circle-card__count-label {
+  font-size: 0.7rem;
+  color: var(--ml-gray-400);
+  font-weight: 500;
+}

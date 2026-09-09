@@ -1,0 +1,150 @@
+.hdp__header {
+  background: var(--ml-gradient-bg);
+  padding: calc(var(--nav-height) + 40px) 0 40px;
+  border-bottom: 1px solid var(--ml-purple-100);
+}
+
+.hdp__header-inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.hdp__back {
+  color: var(--ml-purple-700);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 10px;
+  transition: color 0.15s;
+}
+
+.hdp__back:hover { color: var(--ml-purple-500); }
+
+.hdp__title {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  color: var(--ml-black);
+  margin-bottom: 6px;
+}
+
+.hdp__sub {
+  color: var(--ml-gray-700);
+  font-size: 0.95rem;
+}
+
+.hdp__stats {
+  display: flex;
+  gap: 24px;
+}
+
+.hdp__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--ml-white);
+  border-radius: var(--ml-radius-card);
+  padding: 16px 28px;
+  box-shadow: var(--ml-shadow-card);
+}
+
+.hdp__stat-num {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--ml-purple-700);
+  line-height: 1;
+}
+
+.hdp__stat-label {
+  font-size: 0.75rem;
+  color: var(--ml-gray-400);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Layout */
+.hdp__layout {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+/* Add card */
+.hdp__add-card {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: sticky;
+  top: calc(var(--nav-height) + 24px);
+}
+
+.hdp__card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ml-black);
+}
+
+.hdp__card-sub {
+  font-size: 0.875rem;
+  color: var(--ml-gray-700);
+  margin-top: -6px;
+}
+
+.hdp__form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hdp__success {
+  color: var(--ml-success);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* Roster */
+.hdp__roster-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ml-black);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hdp__participant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hdp__participant-row {
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hdp__participant-num {
+  font-size: 0.8rem;
+  color: var(--ml-gray-400);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .hdp__layout {
+    grid-template-columns: 1fr;
+  }
+  .hdp__add-card {
+    position: static;
+  }
+}
