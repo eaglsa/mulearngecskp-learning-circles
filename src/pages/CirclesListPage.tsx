@@ -66,8 +66,14 @@ export default function CirclesListPage() {
             Learning <span className="clp__hero-accent">Circles</span>
           </h1>
           <p className="clp__hero-sub animate-slide-up">
-            Find your tribe. Join a circle of learners who share your passion and
-            grow together through collaborative sessions.
+            A Learning Circle is a small group of students learning the same skill
+            together — no lectures, no formal sessions. Just a few people who pick
+            a topic, team up, and learn by actually building and doing it, at their own pace.
+          </p>
+          <p className="clp__hero-contact animate-slide-up">
+            Have questions before requesting a circle? Reach out to{" "}
+            <strong>Muhammed Shadil M P</strong> — 📞{" "}
+            <a href="tel:+919895195654" className="clp__hero-contact-link">+919895195654</a>
           </p>
 
           <div className="clp__hero-actions animate-slide-up">

@@ -20,26 +20,27 @@ export default function Navbar() {
   return (
     <nav className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}>
       <div className="navbar__inner container">
-        {/* Logo */}
-        <Link to="/" className="navbar__logo" aria-label="μLearn home">
-          <span className="navbar__logo-mu">μ</span>
-          <span className="navbar__logo-text">Learn</span>
-        </Link>
+
 
         {/* Desktop links */}
         <div className="navbar__links">
-          {links.map(({ to, label, end }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              className={({ isActive }) =>
-                `navbar__link ${isActive ? "navbar__link--active" : ""}`
-              }
-            >
-              {label}
-            </NavLink>
-          ))}
+          <a
+            href="https://campus-chapter-mulearn.vercel.app/"
+            className="navbar__link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Home
+          </a>
+          <NavLink
+            to="/circles"
+            end={false}
+            className={({ isActive }) =>
+              `navbar__link ${isActive ? "navbar__link--active" : ""}`
+            }
+          >
+            Learning Circles
+          </NavLink>
         </div>
 
         {/* CTA */}
@@ -65,19 +66,25 @@ export default function Navbar() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="navbar__mobile animate-slide-down">
-          {links.map(({ to, label, end }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              className={({ isActive }) =>
-                `navbar__mobile-link ${isActive ? "navbar__mobile-link--active" : ""}`
-              }
-              onClick={() => setMobileOpen(false)}
-            >
-              {label}
-            </NavLink>
-          ))}
+          <a
+            href="https://campus-chapter-mulearn.vercel.app/"
+            className="navbar__mobile-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setMobileOpen(false)}
+          >
+            Home
+          </a>
+          <NavLink
+            to="/circles"
+            end={false}
+            className={({ isActive }) =>
+              `navbar__mobile-link ${isActive ? "navbar__mobile-link--active" : ""}`
+            }
+            onClick={() => setMobileOpen(false)}
+          >
+            Learning Circles
+          </NavLink>
           <Link
             to="/circles/new"
             className="btn btn-primary btn-sm"

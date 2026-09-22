@@ -50,6 +50,29 @@
   line-height: 1.65;
 }
 
+.clp__hero-contact {
+  color: rgba(255,255,255,0.65);
+  font-size: 0.9rem;
+  max-width: 480px;
+  line-height: 1.5;
+}
+
+.clp__hero-contact strong {
+  color: rgba(255,255,255,0.9);
+}
+
+.clp__hero-contact-link {
+  color: #C4B5FD;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+
+.clp__hero-contact-link:hover {
+  color: #fff;
+}
+
 .clp__hero-actions {
   display: flex;
   gap: 16px;
