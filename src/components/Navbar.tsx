@@ -13,11 +13,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const links = [
-    { to: "/", label: "Home", end: true },
-    { to: "/circles", label: "Learning Circles", end: false },
-  ];
-
   return (
     <nav className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}>
       <div className="navbar__inner container">
