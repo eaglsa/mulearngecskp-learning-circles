@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink, Link } from "react-router-dom";
+import muLearnLogo from "../assets/mulearn-logo.png";
 import "./Navbar.css";
 
 export default function Navbar() {
@@ -21,14 +22,16 @@ export default function Navbar() {
     <nav className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}>
       <div className="navbar__inner container">
 
+        {/* Logo */}
+        <div className="navbar__logo">
+          <img src={muLearnLogo} alt="muLearn GECSKP" className="navbar__logo-img" />
+        </div>
 
         {/* Desktop links */}
         <div className="navbar__links">
           <a
             href="https://campus-chapter-mulearn.vercel.app/"
             className="navbar__link"
-            target="_blank"
-            rel="noopener noreferrer"
           >
             Home
           </a>
@@ -69,8 +72,6 @@ export default function Navbar() {
           <a
             href="https://campus-chapter-mulearn.vercel.app/"
             className="navbar__mobile-link"
-            target="_blank"
-            rel="noopener noreferrer"
             onClick={() => setMobileOpen(false)}
           >
             Home

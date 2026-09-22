@@ -28,21 +28,16 @@
 /* Logo */
 .navbar__logo {
   display: flex;
-  align-items: baseline;
-  gap: 2px;
-  font-weight: 800;
-  font-size: 1.4rem;
+  align-items: center;
+  flex-shrink: 0;
   margin-right: auto;
-  text-decoration: none;
 }
 
-.navbar__logo-mu {
-  color: var(--ml-purple-700);
-  font-size: 1.6rem;
-}
-
-.navbar__logo-text {
-  color: var(--ml-black);
+.navbar__logo-img {
+  height: 120px;
+  width: auto;
+  object-fit: contain;
+  display: block;
 }
 
 /* Desktop links */
